@@ -35,9 +35,6 @@ uint32_t dmac_initialized = 0;
 void DMAC_Handler() {
   uint8_t active_channel;
 
-  //Disable global interrupts
-  __disable_irq();
-
   //Get the triggering channel number
   active_channel = DMAC->INTPEND.reg & DMAC_INTPEND_ID_Msk;
   DMAC->CHID.reg = DMAC_CHID_ID(active_channel);
@@ -56,9 +53,6 @@ void DMAC_Handler() {
   DMAC->CHINTFLAG.reg = DMAC_CHINTENCLR_TCMPL; // clear
   DMAC->CHINTFLAG.reg = DMAC_CHINTENCLR_TERR;
   DMAC->CHINTFLAG.reg = DMAC_CHINTENCLR_SUSP;
-
-  //Enable global interrupts
-  __enable_irq();
 }
 
 void DMAC_Init()

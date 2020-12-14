@@ -69,12 +69,10 @@ class DMA_SPI
 
     void disable()
     {
-      __disable_irq();
       DMAC->CHID.reg = DMAC_CHID_ID(chnltx);   //disable DMA to allow lib SPI
       DMAC->CHCTRLA.reg &= ~DMAC_CHCTRLA_ENABLE;
       DMAC->CHID.reg = DMAC_CHID_ID(chnlrx);
       DMAC->CHCTRLA.reg &= ~DMAC_CHCTRLA_ENABLE;
-      __enable_irq();
     }
 
   private:
@@ -86,7 +84,6 @@ class DMA_SPI
 
     void xfr(void *txdata, void *rxdata, size_t n)
     {
-      __disable_irq();
 
       uint32_t temp_CHCTRLB_reg;
 
@@ -134,14 +131,13 @@ class DMA_SPI
       memcpy(&descriptor_section[chnlrx], &descriptor, sizeof(dmacdescriptor));
 
       // start both channels
+
       DMAC->CHID.reg = DMAC_CHID_ID(chnltx);
       DMAC->CHCTRLA.reg |= DMAC_CHCTRLA_ENABLE;
       DMAC->CHID.reg = DMAC_CHID_ID(chnlrx);
       DMAC->CHCTRLA.reg |= DMAC_CHCTRLA_ENABLE;
 
-      __enable_irq();
     }
 };
 
 #endif //_DMA_SPI_
-
